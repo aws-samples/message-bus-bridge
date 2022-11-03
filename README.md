@@ -1,6 +1,7 @@
 ## My Project
 
 TODO: Fill this README out!
+This should be filled out shortly. Please stand by!
 
 Be sure to:
 
