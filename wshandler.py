@@ -29,6 +29,9 @@ STUB_SEND_DELAY = 0
 
 
 class WSHandler:
+    """
+    WebSocket handling class.
+    """
 
     def __init__(self):
         self.ws_failed: bool = False
@@ -234,7 +237,6 @@ class WSHandler:
         if self.ws_handle:
             self.ws_handle.close()
 
-    #        self.logger.debug_print("wshandler.close() - finished")
 
     def send_ws_message(self, msg):
         """

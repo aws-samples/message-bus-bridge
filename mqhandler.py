@@ -14,6 +14,9 @@ import amqpstorm
 
 
 class MQHandler:
+    """
+    MQ handling class.
+    """
 
     def __init__(self):
         """
