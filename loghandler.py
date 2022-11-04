@@ -28,7 +28,7 @@ class LogHandler:
         """
         Initializes the LogHandler to a default state.
         Most things are just set to None, but notable is that only ERROR level logging is enabled
-        by default and that CloudWatch log retention defaults to 30 days.
+        by default.
         """
         self.ll_debug = False
         self.ll_verbose = False
