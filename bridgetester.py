@@ -6,8 +6,8 @@
 #
 # 2022-03-25, Brian J. Bernstein
 #
-# Copyright 2022 Amazon.com and its affiliates; all rights reserved.
-# This file is AWS Content and may not be duplicated or distributed without permission.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
 
 import argparse
@@ -198,10 +198,12 @@ class BridgeTester():
         """
         if self.msg_records is not None:
             with open(cli_args.report_file, 'w') as out:
+                out.write("time_send,time_recv,time_elapsed,msg\n")
                 for x in range(0, len(self.msg_records)):
                     m = self.msg_records[x]
+                    # if you want to report everything, remove the below 'if' and keep the 'write'!
                     if m.time_elapsed is None:
-                        out.write(f"{m.msg}\n")
+                        out.write(f"{m.time_send},{m.time_recv},{m.time_elapsed},\"{m.msg}\"\n")
 
     def statusmsg(self, msg, force=False):
         """
