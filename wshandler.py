@@ -6,8 +6,8 @@
 #
 # 2022-03-18, Brian J. Bernstein
 #
-# Copyright 2022 Amazon.com and its affiliates; all rights reserved.
-# This file is AWS Content and may not be duplicated or distributed without permission.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
 
 

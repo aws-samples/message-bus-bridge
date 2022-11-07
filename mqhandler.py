@@ -6,6 +6,9 @@
 #
 # 2022-03-21, Brian J. Bernstein
 #
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 
 
 import time
