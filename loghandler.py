@@ -72,15 +72,25 @@ class LogHandler:
             }
 
             if self.cw_logger is not None:
-                self.cw_mutex.acquire(timeout=3000)
-                try:
-                    if self.cw_seq_token is not None:
-                        levent['sequenceToken'] = self.cw_seq_token
+                sequence_error = True
+                while sequence_error is True:
+                    self.cw_mutex.acquire(timeout=3000)
+                    sequence_error = False
+                    try:
+                        if self.cw_seq_token is not None:
+                            levent['sequenceToken'] = self.cw_seq_token
 
-                    log_response = self.cw_logger.put_log_events(**levent)
-                    self.cw_seq_token = log_response['nextSequenceToken']
-                finally:
-                    self.cw_mutex.release()
+                        log_response = self.cw_logger.put_log_events(**levent)
+                        self.cw_seq_token = log_response['nextSequenceToken']
+                    except Exception as e:
+                        if 'Error' in e.response and 'Code' in e.response['Error']:
+                            # if we detect a CloudWatch sequence conflict, then we'll retry the msg
+                            if e.response['Error']['Code'] == "InvalidSequenceTokenException":
+                                self.cw_seq_token = e.response['expectedSequenceToken']
+                                sequence_error = True
+
+                    finally:
+                        self.cw_mutex.release()
 
         return
 
