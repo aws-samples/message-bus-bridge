@@ -307,8 +307,8 @@ def main():
 
         bb.logger.debug("Waiting for MQ and WebSocket threads to report that they're running...")
         for poll in range(60):
-            if bb.ws_handler.ws_failed is True:
-                bb.logger.error("ERROR: WebSocket connection failed; aborting bridge")
+            if bb.ws_handler.ws_failed is not None:
+                bb.logger.error(f"ERROR: WebSocket connection failed; aborting bridge [{bb.ws_handler.ws_failed}]")
                 bb.server_running = False
                 bb.int_sleeper.set()
                 successful_start = 1
@@ -334,7 +334,12 @@ def main():
                 bb.int_sleeper.set()
 
             if ws_thread.is_alive() is False or bb.ws_handler.ws_running is False:
-                bb.logger.verbose("WebSocket thread detected as stopped, setting shutdown.")
+                # ws_failed will contain reason if exit was a failure
+                if bb.ws_handler and bb.ws_handler.ws_failed is not None:
+                    bb.logger.error(bb.ws_handler.ws_failed)
+                # ws_failed will be 'None' if it was a normal exit
+                else:
+                    bb.logger.verbose("WebSocket thread detected as stopped, setting shutdown.")
                 bb.server_running = False
                 bb.int_sleeper.set()
 

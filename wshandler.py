@@ -34,7 +34,7 @@ class WSHandler:
     """
 
     def __init__(self):
-        self.ws_failed: bool = False
+        self.ws_failed: str = None
 
         # this is if the websocket handler is connected
         self.ws_connected: bool = False
@@ -127,6 +127,7 @@ class WSHandler:
         """
         self.logger.verbose("WebSocket opened")
         self.ws_connected = True
+        # print("CONNECTION OPENED")
 
     def on_message(self, ws, message):
         """
@@ -154,14 +155,16 @@ class WSHandler:
         if self.ws_running is True:
             self.logger.warn("websocket on_close called when ws_running is TRUE?")
         # self.ws_running = False
+        # print("CONNECTION CLOSED")
         self.ws_connected = False
 
         self.logger.verbose(f"on_close code:{code} msg:{msg}")
         if code is None and msg is None:
-            self.logger.warn("websocket appears to have failed to connect (unidentified by library)")
-            self.ws_failed = True
+            self.ws_failed = "websocket appears to have failed to connect (unidentified by library)"
+            self.logger.warn(self.ws_failed)
 
     def on_error(self, ws, ex):
+        # print("CONNECTION ERRORED")
         self.logger.error(f"Received a websocket error: {ex}")
 
     def on_data(self, ws, data, datatype, flag):
@@ -222,6 +225,10 @@ class WSHandler:
                 self.logger.error(f"Exception caught from run_forever! {e}")
                 raise e
 
+        if attempt >= self.ws_max_connect_attempts:
+            self.ws_failed = "Exiting WebSocket forever loop because number of connect attempts exceeded"
+            self.logger.error(self.ws_failed)
+
     def run_ws_server_stub(self):
         self.ws_running = True
         self.ws_connected = True
@@ -236,7 +243,6 @@ class WSHandler:
         self.ws_running = False
         if self.ws_handle:
             self.ws_handle.close()
-
 
     def send_ws_message(self, msg):
         """
