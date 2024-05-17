@@ -184,10 +184,11 @@ class MQHandler:
             return False
 
         success = self.mq_to_ws_method(message.body)
-        if success is True:
+        if success is True and self.mq_running is True:
             message.ack()
         else:
             message.reject(requeue=True)
+            self.logger.warn("MQ to WS message failed, so rejected")
         self.logger.debug("MQ finished sending msg to WebSocket handler")
         return success
 
@@ -233,6 +234,9 @@ class MQHandler:
         # if consume_messages returned, then we must be done
         self.mq_running = False
         self.logger.verbose("Exiting mq_server")
+
+    def prepare_for_shutdown(self):
+        self.mq_running = False
 
     def close(self):
         """

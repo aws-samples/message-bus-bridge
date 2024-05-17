@@ -238,6 +238,10 @@ class WSHandler:
         self.logger.debug("WebSocket stub server exiting")
         return
 
+    def prepare_for_shutdown(self):
+        # nothing special to do here, so just close because we need to stop consuming ASAP
+        self.close()
+
     def close(self):
         self.logger.debug("wshandler.close() called")
         self.ws_running = False

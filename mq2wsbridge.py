@@ -32,7 +32,7 @@ JOIN_TIMEOUT = 10
 
 # CONFIG: END
 
-VERSION = "v1.0.0"
+VERSION = "v1.1.0"
 
 
 class Mq2WsBridge:
@@ -80,6 +80,14 @@ class Mq2WsBridge:
             sleeper.wait(self.interrupt_secs)
             self.logger.verbose("Interrupter invoked to attempt to shut down mq2ws bridge")
             self.server_running = False
+
+        self.logger.debug("Preparing WebSocket handler for shutdown")
+        self.ws_handler.prepare_for_shutdown()
+
+        self.logger.debug("Preparing MQ handler for shutdown")
+        self.mq_handler.prepare_for_shutdown()
+
+        sleeper.wait(1)
 
         self.logger.debug("Closing MQ handler")
         self.mq_handler.close()
